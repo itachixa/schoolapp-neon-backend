@@ -6,6 +6,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/users")
+@CrossOrigin(origins = "*")
 public class UserController {
     private final com.example.schoolapp.repository.UserRepository repo;
     public UserController(com.example.schoolapp.repository.UserRepository repo) { this.repo = repo; }
