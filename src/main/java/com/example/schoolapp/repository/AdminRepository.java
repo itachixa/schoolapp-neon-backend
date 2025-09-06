@@ -1,0 +1,1 @@
+package com.example.schoolapp.repository; import com.example.schoolapp.model.Admin; import org.springframework.data.jpa.repository.JpaRepository; public interface AdminRepository extends JpaRepository<Admin, Long> {}

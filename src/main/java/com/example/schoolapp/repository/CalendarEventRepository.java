@@ -1,0 +1,1 @@
+package com.example.schoolapp.repository; import com.example.schoolapp.model.CalendarEvent; import org.springframework.data.jpa.repository.JpaRepository; public interface CalendarEventRepository extends JpaRepository<CalendarEvent, Long> {}
