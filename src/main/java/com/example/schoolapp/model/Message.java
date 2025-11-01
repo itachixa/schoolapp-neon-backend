@@ -4,32 +4,25 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "message")
 public class Message {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long messageId;
 
-    // 🔹 Relation avec User (expéditeur)
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "sender_id", nullable = false)
     private User sender;
 
-    // 🔹 Relation avec User (destinataire)
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "receiver_id", nullable = false)
+    @ManyToOne(optional = true) // ✅ facultatif pour le chat général
+    @JoinColumn(name = "receiver_id", nullable = true)
     private User receiver;
 
-    // 🔹 Contenu du message
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Column(nullable = false)
     private String content;
 
-    // 🔹 Horodatage automatique
-    @Column(nullable = false)
     private LocalDateTime timestamp = LocalDateTime.now();
 
-    // --- Getters & Setters ---
+    // Getters & Setters
     public Long getMessageId() { return messageId; }
     public void setMessageId(Long messageId) { this.messageId = messageId; }
 

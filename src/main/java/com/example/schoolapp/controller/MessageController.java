@@ -4,72 +4,44 @@ import com.example.schoolapp.model.Message;
 import com.example.schoolapp.model.User;
 import com.example.schoolapp.repository.MessageRepository;
 import com.example.schoolapp.repository.UserRepository;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
 @RequestMapping("/messages")
-@CrossOrigin(origins = {"http://localhost:5173", "https://schoolapp-frontend.vercel.app", "*"})
 public class MessageController {
+    private final MessageRepository messageRepository;
+    private final UserRepository userRepository;
 
-    private final MessageRepository messageRepo;
-    private final UserRepository userRepo;
-
-    public MessageController(MessageRepository messageRepo, UserRepository userRepo) {
-        this.messageRepo = messageRepo;
-        this.userRepo = userRepo;
+    public MessageController(MessageRepository messageRepository, UserRepository userRepository) {
+        this.messageRepository = messageRepository;
+        this.userRepository = userRepository;
     }
 
-    // 🔹 Récupérer tous les messages
     @GetMapping
-    public List<Message> getAll() {
-        return messageRepo.findAll();
+    public List<Message> all() {
+        return messageRepository.findAll();
     }
 
-    // 🔹 Récupérer une conversation entre deux utilisateurs
-    @GetMapping("/conversation/{user1}/{user2}")
-    public ResponseEntity<List<Message>> getConversation(
-            @PathVariable Long user1,
-            @PathVariable Long user2) {
-
-        User u1 = userRepo.findById(user1).orElse(null);
-        User u2 = userRepo.findById(user2).orElse(null);
-        if (u1 == null || u2 == null)
-            return ResponseEntity.badRequest().build();
-
-        List<Message> conv = messageRepo.findConversation(u1, u2);
-        return ResponseEntity.ok(conv);
-    }
-
-    // 🔹 Envoyer un message
     @PostMapping
     public ResponseEntity<Message> sendMessage(@RequestBody Message body) {
-        if (body.getSender() == null || body.getReceiver() == null)
+        if (body.getSender() == null || body.getSender().getId() == null) {
             return ResponseEntity.badRequest().build();
+        }
 
-        // Sécuriser : s’assurer que sender/receiver existent
-        User sender = userRepo.findById(body.getSender().getId()).orElse(null);
-        User receiver = userRepo.findById(body.getReceiver().getId()).orElse(null);
+        // 🧠 Vérifie que le sender existe
+        User sender = userRepository.findById(body.getSender().getId())
+                .orElseThrow(() -> new RuntimeException("Sender not found"));
 
-        if (sender == null || receiver == null)
-            return ResponseEntity.badRequest().build();
+        Message message = new Message();
+        message.setSender(sender);
+        message.setReceiver(body.getReceiver()); // null si chat général
+        message.setContent(body.getContent());
+        message.setTimestamp(LocalDateTime.now());
 
-        body.setSender(sender);
-        body.setReceiver(receiver);
-        body.setTimestamp(java.time.LocalDateTime.now());
-
-        Message saved = messageRepo.save(body);
-        return ResponseEntity.ok(saved);
-    }
-
-    // 🔹 Supprimer un message
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        if (!messageRepo.existsById(id)) return ResponseEntity.notFound().build();
-        messageRepo.deleteById(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(messageRepository.save(message));
     }
 }

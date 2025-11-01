@@ -23,3 +23,4 @@
 /home/itachixa/Desktop/srmL2/Advence_progr/schoolapp-neon-backend/src/main/java/com/example/schoolapp/repository/ProfessorRepository.java
 /home/itachixa/Desktop/srmL2/Advence_progr/schoolapp-neon-backend/src/main/java/com/example/schoolapp/repository/StudentRepository.java
 /home/itachixa/Desktop/srmL2/Advence_progr/schoolapp-neon-backend/src/main/java/com/example/schoolapp/repository/UserRepository.java
+/home/itachixa/Desktop/srmL2/Advence_progr/schoolapp-neon-backend/src/main/java/com/example/schoolapp/repository/config/CorsConfig.java
