@@ -15,13 +15,14 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        // ✅ liste des origines autorisées
                         .allowedOriginPatterns(
-                                "http://localhost:5173",
+                                "http://localhost:*",
+                                "https://student-managment-one.vercel.app",
                                 "https://schoolapp-neon-frontend.onrender.com"
                         )
-                        .allowedMethods("*")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
+                        .exposedHeaders("Authorization", "Content-Disposition")
                         .allowCredentials(true);
             }
         };
